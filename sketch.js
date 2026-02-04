@@ -1,5 +1,6 @@
 let ants = [];
 let food = [];
+let home;
 const rotation = 5;
 const numberOfAnts = 50;
 const amountOfFood = 300;
@@ -20,11 +21,15 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
   angleMode(DEGREES);
+
+  home = new Home(createVector(width*0.2-width/2,height*0.2 - height/2),100)
+
   foodPos = createVector(width / 2 - random(width), height / 2 - random(height));
   piece = new Food(foodPos, 50, amountOfFood);
   piece2 = new Food(createVector(100,100), 50, amountOfFood);
   food.push(piece);
   food.push(piece2)
+
   for (i = 0; i < numberOfAnts; i++) {
     iniPos = createVector(-100, -100);
     ant = new Ant(iniPos, 'worker', 100, random(30,50));
@@ -62,8 +67,14 @@ function draw() {
         ant.applyForce(distanceVector);
       }
     }
+    if(ant.checkFOV(home) && frameCount%10 == 0 ){
+        const distanceVector = home.pos.copy().sub(ant.pos);
+        distanceVector.setMag(0.1);
+	ant.applyForce(distanceVector)
+    }
   }
   for (const f of food) {
     f.show();
   }
+  home.show();
 }

@@ -103,25 +103,32 @@ class Ant{
       if(angleBetween>this.FOV/2){
         return false;
       }
-      else{
-        if(object.id=='food'){
-          this.color = 200
-          if(distance.mag()<object.size){
-            this.eat(object)
-            this.carrying = true
-          }
-        else if(object.id=='pheromone'){
-            this.color=300
-          }
-        }
+      if(object.id=='food'){
+        this.color = 200
+	if(distance.mag()<object.size){
+	  this.eat(object)
+	  this.carrying = true
+	}
+	else if(object.id=='pheromone'){
+	  this.color=300
+	}
         return true;
+      }
+      if(object.id=='home'){
+	return true;
       }
     }
   }
   
   eat(food){
     this.energy+=food.energy/10
-    
+    if(food.energy>1){
+      food.size*=0.9-0.1
+      food.energy*=0.9-0.1
+    }else{
+      food.size=0
+      food.energy=0
+    }
     this.vel.mult(-1)
   }
 }

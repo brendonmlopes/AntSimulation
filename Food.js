@@ -12,5 +12,5 @@ class Food{
     ellipse(this.pos.x,this.pos.y,this.size,this.size)
     pop()
   }
-  
+
 }
