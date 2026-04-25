@@ -1,18 +1,18 @@
 const config = {
-  antCount: 50,
+  antCount: 200,
   startingEnergy: 100,
   carryAmount: 25,
   deliveryEnergyMultiplier: 1.5,
   maxAntEnergy: 160,
   energyDrainRate: 0.1,
-  foodEnergy: 300,
+  foodEnergy: 3000,
   foodSize: 50,
   homeSize: 100,
   maxAnts: 250,
   maxPheromones: 300,
-  pheromoneStrength: 10,
-  pheromoneDropInterval: 20,
-  pheromoneFadeRate: 0.35,
+  pheromoneStrength: 15,
+  pheromoneDropInterval: 1,
+  pheromoneFadeRate: 0.2,
   pheromoneCellSize: 160,
   renderAntSprites: false,
   rotation: 5,
@@ -89,7 +89,7 @@ function resetSimulation() {
   deliveryPopups = [];
   totalFoodDelivered = 0;
   pheromoneGrid = new Map();
-  home = new Home(createVector(width * 0.2 - width / 2, height * 0.2 - height / 2), config.homeSize);
+  home = new Home(createVector(0, 0), config.homeSize);
 
   food.push(new Food(randomWorldPosition(), config.foodSize, config.foodEnergy));
   food.push(new Food(createVector(100, 100), config.foodSize, config.foodEnergy));
