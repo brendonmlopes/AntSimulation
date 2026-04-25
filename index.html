@@ -1,19 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Interactive browser ant colony simulation with pheromone trails, controls, and generated sound." />
+    <meta name="theme-color" content="#1b1610" />
+    <title>Ant Colony Lab</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <script src="p5.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <main>
+    <main id="app-shell" aria-label="Ant Colony Lab">
+      <section class="topbar" aria-label="Simulation controls">
+        <div class="brand" aria-label="Ant Colony Lab">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M7.5 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm9 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+              <path d="M5 9H2M22 9h-3M8.5 14.5 5 19M15.5 14.5 19 19M9.5 7.5 6 4M14.5 7.5 18 4" />
+            </svg>
+          </span>
+          <span>Ant Colony Lab</span>
+        </div>
+
+        <div class="control-group" role="group" aria-label="Playback">
+          <button class="icon-button primary" type="button" data-action="pause" aria-pressed="false" title="Pause">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14M16 5v14" />
+            </svg>
+            <span>Pause</span>
+          </button>
+          <button class="icon-button" type="button" data-action="reset" title="Reset">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 3-6.7M3 4v6h6" />
+            </svg>
+            <span>Reset</span>
+          </button>
+        </div>
+
+        <div class="control-group" role="group" aria-label="World tools">
+          <button class="icon-button" type="button" data-action="food" title="Add food">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3c3.6 2.3 6 5.5 6 9a6 6 0 0 1-12 0c0-3.5 2.4-6.7 6-9Z" />
+              <path d="M12 21v-6" />
+            </svg>
+            <span>Food</span>
+          </button>
+          <button class="icon-button" type="button" data-action="debug" aria-pressed="false" title="Debug view">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>Debug</span>
+          </button>
+          <button class="icon-button" type="button" data-action="sound" aria-pressed="false" title="Sound">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+              <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+            </svg>
+            <span>Sound</span>
+          </button>
+          <button class="icon-button" type="button" data-action="sprites" aria-pressed="false" title="Ant sprites">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16v10H4z" />
+              <path d="M8 7V4h8v3M8 17v3h8v-3" />
+            </svg>
+            <span>Sprites</span>
+          </button>
+          <button class="icon-button" type="button" data-action="config" aria-expanded="false" title="Configuration">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3" />
+              <path d="M2 14h4M10 8h4M18 16h4" />
+            </svg>
+            <span>Config</span>
+          </button>
+        </div>
+      </section>
+
+      <aside id="config-panel" class="config-panel" aria-label="Simulation configuration" aria-hidden="true">
+        <header>
+          <div>
+            <strong>Configuration</strong>
+            <small>Live simulation variables</small>
+          </div>
+          <button class="panel-close" type="button" data-action="config-close" title="Close configuration">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </header>
+        <div id="config-fields" class="config-fields"></div>
+      </aside>
+
+      <section class="stats-bar" aria-label="Simulation statistics">
+        <div><span id="stat-ants">0</span><small>ants</small></div>
+        <div><span id="stat-food">0</span><small>food</small></div>
+        <div><span id="stat-pheromones">0</span><small>trails</small></div>
+        <div><span id="stat-fps">0</span><small>fps</small></div>
+      </section>
+
+      <div id="status-toast" role="status" aria-live="polite"></div>
     </main>
-    <script src="sketch.js"></script>
+
+    <noscript>
+      <p class="noscript">JavaScript is required to run Ant Colony Lab.</p>
+    </noscript>
+
     <script src="Ant.js"></script>
     <script src="Food.js"></script>
     <script src="Pheromone.js"></script>
     <script src="Home.js"></script>
+    <script src="sketch.js"></script>
   </body>
 </html>

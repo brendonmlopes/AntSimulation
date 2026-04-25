@@ -1,0 +1,10 @@
+{
+  "name": "ant-colony-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static p5.js ant colony simulation ready for Vercel.",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "check": "node --check sketch.js && node --check Ant.js && node --check Food.js && node --check Pheromone.js && node --check Home.js"
+  }
+}
